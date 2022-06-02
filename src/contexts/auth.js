@@ -4,21 +4,21 @@ import firebase from '../services/firebaseConnection';
 
 export const AuthContext = createContext({});
 
-function AuthProvider({ children }){
+function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loadingAuth, setLoadingAuth] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    useEffect(()=>{
+    useEffect(() => {
 
-        function loadStorage(){
+        function loadStorage() {
             const storageUser = localStorage.getItem('SistemaUser')
-    
-            if(storageUser){
+
+            if (storageUser) {
                 setUser(JSON.parse(storageUser));
                 setLoading(false);
             }
-    
+
             setLoading(false);
         }
 
@@ -27,56 +27,91 @@ function AuthProvider({ children }){
 
     }, [])
 
-    async function signUp(email, password, nome){
+    //Fazendo login do usuario
+    async function signIn(email, password) {
         setLoadingAuth(true);
 
-        await firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then( async (value)=>{
-            let uid = value.user.uid;
+        await firebase.auth().signInWithEmailAndPassword(email, password)
+            .then(async (value) => {
+                let uid = value.user.uid;
 
-            await firebase.firestore().collection('users')
-            .doc(uid).set({
-                nome: nome,
-                avatarUrl: null,
-            })
-            .then(()=>{
+                const userProfile = await firebase.firestore().collection('users')
+                    .doc(uid).get();
+
                 let data = {
                     uid: uid,
-                    nome: nome,
-                    email: value.user.email,
-                    avatarUrl: null
+                    nome: userProfile.data().nome,
+                    avatarUrl: userProfile.data().avatarUrl,
+                    email: value.user.email
                 };
 
                 setUser(data);
                 storageUser(data);
                 setLoadingAuth(false);
+
             })
-
-        })
-        .catch((error) =>{
-            console.log(error);
-            setLoadingAuth(false);
-        })
+            .catch((error) => {
+                console.log(error)
+                setLoadingAuth(false);
+            })
     }
 
-    function storageUser(data){
-        localStorage.setItem('SistemaUser')
+    //Cadastrar um novo usuário
+    async function signUp(email, password, nome) {
+        setLoadingAuth(true);
+
+        await firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then(async (value) => {
+                let uid = value.user.uid;
+
+                await firebase.firestore().collection('users')
+                    .doc(uid).set({
+                        nome: nome,
+                        avatarUrl: null,
+                    })
+                    .then(() => {
+                        let data = {
+                            uid: uid,
+                            nome: nome,
+                            email: value.user.email,
+                            avatarUrl: null
+                        };
+
+                        setUser(data);
+                        storageUser(data);
+                        setLoadingAuth(false);
+                    })
+
+            })
+            .catch((error) => {
+                console.log(error);
+                setLoadingAuth(false);
+            })
     }
 
-    async function signOut(){
+
+
+    function storageUser(data) {
+        localStorage.setItem('SistemaUser', JSON.stringify(data))
+    }
+
+    //Fazer logout do usuário
+    async function signOut() {
         await firebase.auth().signOut();
         localStorage.removeItem('SistemaUser');
         setUser(null);
     }
 
-    return( // ------------------------------> "!!"converte para booleano
+    return ( // ------------------------------> "!!"converte para booleano
         <AuthContext.Provider value={{
-             signed: !!user, 
-             user, 
-             loading, 
-             signUp,
-             signOut
-             }}> 
+            signed: !!user,
+            user,
+            loading,
+            signUp,
+            signOut,
+            signIn,
+            loadingAuth
+        }}>
             {children}
         </AuthContext.Provider>
     );
