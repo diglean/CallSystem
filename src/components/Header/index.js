@@ -12,19 +12,20 @@ export default function Header() {
     return (
         <div className="sidebar">
             <div>
-                <img src={user.avatarUrl === null ? avatar : user.avatarUrl} alt={'Foto avatar'} />
+                <img src={user.avatarUrl === null ? avatar : user.avatarUrl} alt="Foto avatar" />
             </div>
 
+
             <Link to="/dashboard">
-                <FiHome color="#FFF" size={24}/>
+                <FiHome color="#FFF" size={24} />
                 Chamados
             </Link>
             <Link to="/costumers">
-                <FiUser color="#FFF" size={24}/>
+                <FiUser color="#FFF" size={24} />
                 Clientes
             </Link>
             <Link to="/profile">
-                <FiSettings color="#FFF" size={24}/>
+                <FiSettings color="#FFF" size={24} />
                 Configurações
             </Link>
         </div>
