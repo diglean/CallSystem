@@ -17,7 +17,7 @@ export default function Costumers(){
         e.preventDefault();
         
         if(nomeFantasia !== '' && cnpj !== '' && endereco !== ''){
-            await firebase.firestore().collection('costumers')
+            await firebase.firestore().collection('customers')
             .add({
                 nomeFantasia: nomeFantasia,
                 cnpj: cnpj,
