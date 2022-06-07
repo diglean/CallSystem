@@ -11,35 +11,36 @@ export default function Modal({ conteudo, close }) {
                 </button>
 
                 <div>
-                    <h2>Detalhes do chamado</h2>
+                    <h2>Detalhes do chamado</h2><br/>
 
                     <div className="row">
                         <span>
-                            Cliente: <a>{conteudo.cliente}</a>
+                            Cliente: <i>{conteudo.cliente}</i>
                         </span>
                     </div>
                     <div className="row">
                         <span>
-                            Assunto: <a>{conteudo.assunto}</a>
+                            Assunto: <i>{conteudo.assunto}</i>
                         </span>
                         <span>
-                            Cadastrado em: <a>{conteudo.createdFormated}</a>
+                            Cadastrado em: <i>{conteudo.createdFormated}</i>
                         </span>
-                        <div className="row">
-                            <span>
-                                Status: <a style={{ color: '#FFF', backgroundColor: conteudo.status === 'Aberto' ? '#5cb85c' : '#999' }}>{conteudo.status}</a>
-                            </span>
-                        </div>
+                    </div>
+                    <div className="row">
+                        <span>
+                            Status: <i style={{ color: '#FFF', backgroundColor: conteudo.status === 'Aberto' ? '#5cb85c' : '#999' }}>{conteudo.status}</i>
+                        </span>
+                    </div>
 
-                        {conteudo.complemento !== '' &&(
-                            <>
+                    {conteudo.complemento !== '' && (
+                        <>
                             <h3>Complemento</h3>
                             <p>
                                 {conteudo.complemento}
                             </p>
-                            </>
-                        )}
-                    </div>
+                        </>
+                    )}
+
                 </div>
             </div>
         </div>
